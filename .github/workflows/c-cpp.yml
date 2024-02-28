@@ -34,7 +34,7 @@ jobs:
         mv .\butler.exe C:\Windows
 
     - name: Authenticate with itch.io
-      run: butler login --api-key ${{ secrets.BUTLER_API_KEY }}
+      run: butler login -i ${{ secrets.BUTLER_API_KEY }}
 
     - name: Push to itch.io
-      run: butler push ./Game_Finished/Debug idSynth/cicd-test-game:windows-beta
+      run: butler push ./Game_Finished/Release idSynth/cicd-test-game:windows-beta
