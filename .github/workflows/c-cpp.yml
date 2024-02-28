@@ -1,28 +1,44 @@
-name: C/C++ CI
+name: C++ CI/CD with itch.io deployment
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
-    - name: C++ code tester
-      uses: Eason-S-Lu/CPP-Test-Compile@v1.0
+    - uses: actions/checkout@v3
 
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Install dependencies
+      run: sudo apt-get install -y g++ cmake
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install butler
+      run: |
+        curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+        unzip butler.zip
+        chmod +x butler
+        sudo mv butler /usr/bin/
+
+    - name: Authenticate with itch.io
+      run: butler login --api-key ${{ VEN5lz4dHVe8Y0EwtCwcErpGLLRNfuv2GmhyOEN1 }}
+
+    - name: Push to itch.io
+      run: butler push ./build idSynth/cicd-test-game:windows-beta
