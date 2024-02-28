@@ -36,4 +36,4 @@ jobs:
     - name: Push to itch.io
       env:
          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-      run: butler push ./Game_Finished/bin/Release idSynth/cicd-test-game:windows-beta
+      run: butler push ./Game_Finished/x64/Release idSynth/cicd-test-game:windows-beta
