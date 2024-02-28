@@ -8,37 +8,33 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: sudo apt-get install -y g++ cmake
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        cmake ..
-        make
+    - name: Build solution
+      run: msbuild MySolution.sln /p:Configuration=Release  # replace with your solution file
 
   deploy:
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
 
     - name: Install butler
+      shell: powershell
       run: |
-        curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-        unzip butler.zip
-        chmod +x butler
-        sudo mv butler /usr/bin/
+        Invoke-WebRequest -Uri https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default -OutFile butler.zip
+        Expand-Archive butler.zip -DestinationPath ./
+        mv .\butler.exe C:\Windows
 
     - name: Authenticate with itch.io
       run: butler login --api-key ${{ secrets.BUTLER_API_KEY }}
 
     - name: Push to itch.io
-      run: butler push ./build idSynth/cicd-test-game:windows-beta
+      run: butler push ./Game_Finished/Debug idSynth/cicd-test-game:windows-beta
