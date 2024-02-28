@@ -17,7 +17,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build solution
-      run: msbuild ./GameTest.sln /p:Configuration=Release 
+      run: msbuild ./Game_Finished/GameTest.sln /p:Configuration=Release 
 
   deploy:
     needs: build-and-test
