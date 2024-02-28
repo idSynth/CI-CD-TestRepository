@@ -33,8 +33,7 @@ jobs:
         Expand-Archive butler.zip -DestinationPath ./
         mv .\butler.exe C:\Windows
 
-    - name: Authenticate with itch.io
-      run: butler login -i ${{ secrets.BUTLER_API_KEY }}
-
     - name: Push to itch.io
+      env:
+         BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
       run: butler push ./Game_Finished/Release idSynth/cicd-test-game:windows-beta
