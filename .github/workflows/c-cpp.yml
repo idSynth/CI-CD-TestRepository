@@ -19,25 +19,6 @@ jobs:
     - name: Build solution
       run: msbuild ./Game_Finished/GameTest.sln /p:Configuration=Release /p:OutDir=.\BuildResult\Game\
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: game-build
-        path: .\BuildResult\Game\
-
-  deploy:
-    needs: build-and-test
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: game-build
-        path: .\Game_Finished\BuildResult\Game\
-
     - name: Install butler
       shell: powershell
       run: |
